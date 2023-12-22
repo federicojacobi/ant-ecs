@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/federicojacobi/tinyecs.git"
+    "url": "https://github.com/federicojacobi/ant-ecs.git"
   },
   "keywords": [],
   "author": "Federico Jacobi <wpstrategystudio@gmail.com>",
