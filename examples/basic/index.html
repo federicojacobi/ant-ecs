@@ -1,0 +1,122 @@
+<html>
+	<head>
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+			}
+			canvas {
+				background-color: black;
+			}
+		</style>
+	</head>
+	<body>
+		<canvas id="the-canvas" width="640" height="480"></canvas>
+		<script src="tinyecs.js"></script>
+		<script>
+			class PhysicsSystem extends TinyECS.System {
+				constructor() {
+					super();
+					this.selector = ( e ) => e.components.has( 'Physics' );
+				}
+
+				update( delta ) {
+					this.ecs.query( this.selector )
+					.forEach( entity => {
+						const body = entity.components.get( 'Physics' );
+						const vel = {
+							x: Math.cos( body.angle ),
+							y: Math.sin( body.angle )
+						};
+						const nextPos = {
+							x: body.x + ( vel.x * body.speed * delta ),
+							y: body.y + ( vel.y * body.speed * delta )
+						};
+						if ( nextPos.x < 0 || nextPos.x + body.width > 640 ) {
+							vel.x = vel.x * -1;
+							body.x = Math.min( Math.max( body.x, 0 ), 640 );
+						}
+						if ( nextPos.y < 0 || nextPos.y + body.height > 480 ) {
+							body.y = Math.min( Math.max( body.y, 0 ), 480 );
+							vel.y = vel.y * -1;
+						}
+
+						body.angle = Math.atan2( vel.y, vel.x );
+						body.x += vel.x * body.speed * delta;
+						body.y += vel.y * body.speed * delta;
+					} );
+				}
+			}
+
+			class RenderSystem extends TinyECS.System {
+				constructor() {
+					super();
+					this.selector = ( e ) => e.components.has( 'Physics' );
+					this.view = document.getElementById( 'the-canvas' );
+					this.ctx = this.view.getContext( '2d' );
+				}
+
+				update( delta ) {
+					const ctx = this.ctx;
+					ctx.clearRect( 0, 0, this.view.width, this.view.height );
+
+					this.ecs.query( this.selector )
+					.forEach( entity => {
+						const body = entity.components.get( 'Physics' );
+						ctx.strokeStyle = '#ff0000';
+						ctx.strokeRect( Math.round( body.x ), Math.round( body.y ), body.width, body.height );
+					} );
+				}
+			}
+
+			// Instantiate ECS. This is your world.
+			const ecs = new TinyECS.ECS();
+			
+			// Register components one by one. 
+			ecs.registerComponent( {
+				type: 'Physics',	// type is required, the rest is up to you
+				x: 0,
+				y: 0,
+				width: 20,
+				height: 20,
+				maxSpeed: 20,
+				speed: 1,
+				angle: 0
+			} );
+
+			ecs.addSystem( new PhysicsSystem() );
+			ecs.addSystem( new RenderSystem() );
+
+			const scaffold = TinyECS.scaffold;
+			scaffold.setup( ecs );
+
+			for ( let i = 0; i < 100; i++ ) {
+				// Create an empty entity
+				scaffold.create()
+				.addComponent( 'Physics', {
+					x: Math.round( Math.random() * 620 ),
+					y: Math.round( Math.random() * 460 ),
+					width: 20,
+					height: 20,
+					speed: 50,
+					angle: Math.random() * Math.PI
+				} );
+			}
+
+			// Here comes the game loop
+			let last = 0;
+			const loop = () => {
+				const now = (performance || Date).now();
+
+				// Update all the systems.
+				ecs.update( (now - last || now) / 1000 );
+
+				last = now;
+
+				frame = requestAnimationFrame( loop );
+			};
+			loop();
+
+		</script>
+	</body>
+</html>

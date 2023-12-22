@@ -1,0 +1,23 @@
+{
+  "name": "ant-ecs",
+  "version": "0.1.0",
+  "description": "A tiny and understandable entity-component-system implementation.",
+  "exports": "./index.js",
+  "type": "module",
+  "scripts": {
+    "build": "esbuild as-library.js --outfile=dist/ant-ecs.js --bundle --minify"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/federicojacobi/tinyecs.git"
+  },
+  "keywords": [],
+  "author": "Federico Jacobi <wpstrategystudio@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "esbuild": "^0.19.8"
+  },
+  "engines": {
+    "node": " >=14.13.1 || >=16.0.0"
+  }
+}
