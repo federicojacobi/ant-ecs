@@ -1,4 +1,4 @@
-# tinyecs
+# Ant ECS
 
 This ECS implementation is meant to be small and understandable. Although it is pretty fast, it is not performance focused. If you really need a performance focused ECS framework should you be using Javascript to begin with?
 
@@ -22,7 +22,7 @@ In JS it is much simpler to think of an entity as an object rather than an id (t
 
 ```
 // Instantiate ECS. This is your world.
-const ecs = new ECS();
+const ecs = new AntECS.ECS();
 
 // Register components one by one. 
 ecs.registerComponent( {
@@ -32,7 +32,7 @@ ecs.registerComponent( {
 } );
 
 // Create a system
-class MovementSystem extends System {
+class MovementSystem extends AntECS.System {
 	constructor() {
 		super();
 		// Create a selector for your system. This will be used to query the world for entities that match. See `ecs.query()` below.
