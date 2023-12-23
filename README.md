@@ -18,11 +18,21 @@ In JS it is much simpler to think of an entity as an object rather than an id (t
 - Components don't do anything! They don't do logic, they don't add x+y, they don't translate coordinates. They just hold data.
 - Systems do the work! they create/remove entities and modify components. They work by themselves and are independant from anything going on in your game world
 
+## Install
+
+If you use ES modules:
+
+`npm install ant-ecs`
+
+If you don't, just use the `ant-ecs.js` file from the `/dist/` directory in a `<script>` tag.
+
 ## How to use
 
 ```
+import {scaffold, ECS, System} from "ant-ecs";
+
 // Instantiate ECS. This is your world.
-const ecs = new AntECS.ECS();
+const ecs = new ECS();
 
 // Register components one by one. 
 ecs.registerComponent( {
@@ -32,7 +42,7 @@ ecs.registerComponent( {
 } );
 
 // Create a system
-class MovementSystem extends AntECS.System {
+class MovementSystem extends System {
 	constructor() {
 		super();
 		// Create a selector for your system. This will be used to query the world for entities that match. See `ecs.query()` below.
