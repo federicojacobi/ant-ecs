@@ -39,13 +39,18 @@ export default class uECS {
 	}
 
 	getNextComponent( type ) {
-		if ( this.componentPool.has( type ) && this.componentPool.get( type ).length > 0 ) {
-			return this.componentPool.get( type ).pop();
-		}
-
 		if ( ! this.blueprint.has( type ) ) {
 			throw new Error( `${type} component is not registered` );
 		}
+
+		if ( this.componentPool.has( type ) && this.componentPool.get( type ).length > 0 ) {
+			// reset component
+			const bp = this.blueprint.get( type );
+			const newComponent = this.componentPool.get( type ).pop();
+			Object.assign( newComponent, bp );
+			return newComponent;
+		}
+
 		return { ...this.blueprint.get( type ) };
 	}
 
