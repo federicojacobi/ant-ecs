@@ -3,11 +3,9 @@ import ECS from "./src/ECS.js";
 import System from "./src/System.js";
 import { scaffold } from "./src/Scaffold.js";
 
-const AntECS = {
+export {
 	ECS,
 	uECS,
 	System,
 	scaffold
 };
-
-export default AntECS;
