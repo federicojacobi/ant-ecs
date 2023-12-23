@@ -1,6 +1,6 @@
 {
   "name": "ant-ecs",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A tiny and understandable entity-component-system implementation.",
   "exports": "./index.js",
   "type": "module",
