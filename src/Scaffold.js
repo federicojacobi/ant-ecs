@@ -1,36 +1,47 @@
-export const scaffold = {
-	/**
-	 * Setup ECS for use later.
-	 *
-	 * @param {ECS} ecs 
-	 */
-	setup( ecs ) {
-		this.ecs = ecs;
-		return this;
-	},
+/**
+ * Helper to create entities and quickly add components.
+ *
+ * @param {*} _ecs The ECS instance.
+ * @returns a Scaffold object.
+ */
+export function Scaffold( _ecs ) {
+	const ecs = _ecs;
+	let entity = null;
+	return {
+		/**
+		 * Create a new entity.
+		 *
+		 * @returns this
+		 */
+		create() {
+			entity = ecs.getNextEntity();
+			return this;
+		},
 
-	/**
-	 * Create a new entity.
-	 *
-	 * @returns this
-	 */
-	create() {
-		this.entity = this.ecs.getNextEntity();
-		return this;
-	},
+		/**
+		 * Create a new component and add to the current entity.
+		 *
+		 * @param {*} component 
+		 * @returns 
+		 */
+		addComponent( component, args = null ) {
+			if ( ! entity ) {
+				throw 'Create an entity before adding a component.';
+			}
+			const _component = ecs.getNextComponent( component );
+			ecs.addComponent( entity, _component );
+			if ( args !== null ) {
+				Object.assign( _component, args );
+			}
+			return this;
+		},
 
-	/**
-	 * Create a new component and add to the current entity.
-	 *
-	 * @param {*} component 
-	 * @returns 
-	 */
-	addComponent( component, args = null ) {
-		const _component = this.ecs.getNextComponent( component );
-		this.ecs.addComponent( this.entity, _component );
-		if ( args !== null ) {
-			Object.assign( _component, args );
+		/**
+		 * Returns the entity that was last created.
+		 * @returns {Entity} The current entity.
+		 */
+		getEntity() {
+			return entity;
 		}
-		return this;
 	}
 }
