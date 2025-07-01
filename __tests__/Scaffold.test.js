@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import { Scaffold } from '../src/Scaffold.js';
+import Scaffold from '../src/Scaffold.js';
 import ECS from '../src/ECS.js';
 import { Entity } from '../src/Entity.js';
 

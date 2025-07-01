@@ -4,7 +4,7 @@
  * @param {*} _ecs The ECS instance.
  * @returns a Scaffold object.
  */
-export function Scaffold( _ecs ) {
+export default function Scaffold( _ecs ) {
 	const ecs = _ecs;
 	let entity = null;
 	return {
