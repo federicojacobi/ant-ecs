@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "build": "esbuild as-library.js --outfile=dist/ant-ecs.js --bundle --minify",
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "lint": "eslint ."
   },
   "repository": {
     "type": "git",
@@ -16,7 +17,10 @@
   "author": "Federico Jacobi <wpstrategystudio@gmail.com>",
   "license": "ISC",
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.1",
     "esbuild": "^0.25.5",
+    "eslint": "^9.30.0",
+    "eslint-config-wordpress": "^2.0.0",
     "jest": "^30.0.3"
   },
   "engines": {
