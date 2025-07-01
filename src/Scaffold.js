@@ -37,6 +37,14 @@ export function Scaffold( _ecs ) {
 		},
 
 		/**
+		 * Sets entity to scaffold. In cases you need to edit fast.
+		 * @param {Entity} _entity The entity to scaffold.
+		 */
+		setEntity( _entity ) {
+			entity = _entity;
+		},
+
+		/**
 		 * Returns the entity that was last created.
 		 * @returns {Entity} The current entity.
 		 */
