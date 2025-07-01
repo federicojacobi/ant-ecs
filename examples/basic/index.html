@@ -12,9 +12,9 @@
 	</head>
 	<body>
 		<canvas id="the-canvas" width="640" height="480"></canvas>
-		<script src="tinyecs.js"></script>
+		<script src="ant-ecs.js"></script>
 		<script>
-			class PhysicsSystem extends TinyECS.System {
+			class PhysicsSystem extends System {
 				constructor() {
 					super();
 					this.selector = ( e ) => e.components.has( 'Physics' );
@@ -48,7 +48,7 @@
 				}
 			}
 
-			class RenderSystem extends TinyECS.System {
+			class RenderSystem extends System {
 				constructor() {
 					super();
 					this.selector = ( e ) => e.components.has( 'Physics' );
@@ -70,7 +70,7 @@
 			}
 
 			// Instantiate ECS. This is your world.
-			const ecs = new TinyECS.ECS();
+			const ecs = new ECS();
 			
 			// Register components one by one. 
 			ecs.registerComponent( {
@@ -87,8 +87,7 @@
 			ecs.addSystem( new PhysicsSystem() );
 			ecs.addSystem( new RenderSystem() );
 
-			const scaffold = TinyECS.scaffold;
-			scaffold.setup( ecs );
+			const scaffold = Scaffold( ecs );
 
 			for ( let i = 0; i < 100; i++ ) {
 				// Create an empty entity
