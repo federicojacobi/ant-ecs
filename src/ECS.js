@@ -56,14 +56,12 @@ export default class ECS {
 	}
 
 	removeComponent( entity, components = [] ) {
-		// FIX: Refactored to handle component objects correctly for cleanup
 		const componentTypes = Array.isArray(components) ? components : [components];
 
 		componentTypes.forEach(componentType => {
 			if (entity.components.has(componentType)) {
-				// Get the component object before deleting it from the entity
 				const componentObject = entity.components.get(componentType);
-				this.dirtyComponents.push(componentObject); // Push the actual component object for recycling
+				this.dirtyComponents.push(componentObject);
 				entity.components.delete(componentType);
 			}
 		});
@@ -87,7 +85,6 @@ export default class ECS {
 	}
 
 	updateQueries( entity ) {
-		// FIX: Correctly remove entities from query results instead of deleting the whole query
 		for ( const [query, results] of this.queries.entries() ) {
 			const index = results.indexOf( entity );
 			const matches = query( entity );
@@ -124,25 +121,23 @@ export default class ECS {
 	}
 
 	#cleanup() {
-		// Process killed entities
 		while ( this.dirtyEntities.length > 0 ) {
 			const entity = this.dirtyEntities.pop();
 			const entityIndex = this.entities.indexOf(entity);
 
-			if (entityIndex === -1) continue; // Already processed or never added
+			if (entityIndex === -1) {
+				continue;
+			}
 
 			const [removed] = this.entities.splice( entityIndex, 1 );
 
-			// Mark all its components for cleanup
 			removed.components.forEach( component => {
 				this.dirtyComponents.push( component );
 			} );
 	
-			// Clear its component map and add to pool for reuse
 			removed.components.clear();
 			this.entityPool.push( removed );
 
-			// FIX: Correctly remove entity from all query results
 			for ( const results of this.queries.values() ) {
 				const index = results.indexOf( entity );
 				if ( index > -1 ) {
