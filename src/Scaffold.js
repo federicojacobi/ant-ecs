@@ -8,6 +8,7 @@ export default function Scaffold( _ecs ) {
 	const ecs = _ecs;
 	let entity = null;
 	return {
+
 		/**
 		 * Create a new entity.
 		 *
@@ -21,8 +22,8 @@ export default function Scaffold( _ecs ) {
 		/**
 		 * Create a new component and add to the current entity.
 		 *
-		 * @param {*} component 
-		 * @returns 
+		 * @param {*} component
+		 * @returns
 		 */
 		addComponent( component, args = null ) {
 			if ( ! entity ) {
@@ -30,7 +31,7 @@ export default function Scaffold( _ecs ) {
 			}
 			const _component = ecs.getNextComponent( component );
 			ecs.addComponent( entity, _component );
-			if ( args !== null ) {
+			if ( null !== args ) {
 				Object.assign( _component, args );
 			}
 			return this;
@@ -51,5 +52,5 @@ export default function Scaffold( _ecs ) {
 		getEntity() {
 			return entity;
 		}
-	}
+	};
 }

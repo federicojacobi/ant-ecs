@@ -3,5 +3,5 @@ export default class System {
 
 	update( delta ) {}
 
-	destroy(){}
+	destroy() {}
 }

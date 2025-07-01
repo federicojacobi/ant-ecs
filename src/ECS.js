@@ -17,7 +17,7 @@ export default class ECS {
 
 	getNextEntity() {
 		let _entity;
-		if ( this.entityPool.length > 0 ) {
+		if ( 0 < this.entityPool.length ) {
 			_entity = this.entityPool.pop();
 		} else {
 			_entity = new Entity();
@@ -26,7 +26,7 @@ export default class ECS {
 
 		// When an entity is recycled, it might already be in some query results from its previous life.
 		// We need to update queries for this new "empty" entity.
-		this.updateQueries(_entity);
+		this.updateQueries( _entity );
 
 		return _entity;
 	}
@@ -44,7 +44,8 @@ export default class ECS {
 			throw new Error( `${type} component is not registered` );
 		}
 
-		if ( this.componentPool.has( type ) && this.componentPool.get( type ).length > 0 ) {
+		if ( this.componentPool.has( type ) && 0 < this.componentPool.get( type ).length ) {
+
 			// reset component
 			const bp = this.blueprint.get( type );
 			const newComponent = this.componentPool.get( type ).pop();
@@ -55,43 +56,43 @@ export default class ECS {
 		return { ...this.blueprint.get( type ) };
 	}
 
-	removeComponent( entity, components = [] ) {
-		const componentTypes = Array.isArray(components) ? components : [components];
+	removeComponent( entity, components = []) {
+		const componentTypes = Array.isArray( components ) ? components : [ components ];
 
-		componentTypes.forEach(componentType => {
-			if (entity.components.has(componentType)) {
-				const componentObject = entity.components.get(componentType);
-				this.dirtyComponents.push(componentObject);
-				entity.components.delete(componentType);
+		componentTypes.forEach( componentType => {
+			if ( entity.components.has( componentType ) ) {
+				const componentObject = entity.components.get( componentType );
+				this.dirtyComponents.push( componentObject );
+				entity.components.delete( componentType );
 			}
 		});
-		
+
 		this.updateQueries( entity );
 
 		return this;
 	}
 
-	addComponent( entity, components = [] ) {
+	addComponent( entity, components = []) {
 		if ( Array.isArray( components ) ) {
 			components.forEach( component => {
 				entity.components.set( component.type, component );
-			} );
+			});
 		} else {
 			entity.components.set( components.type, components );
 		}
-		
+
 		this.updateQueries( entity );
 		return this;
 	}
 
 	updateQueries( entity ) {
-		for ( const [query, results] of this.queries.entries() ) {
+		for ( const [ query, results ] of this.queries.entries() ) {
 			const index = results.indexOf( entity );
 			const matches = query( entity );
 
-			if ( matches && index === -1 ) {
+			if ( matches && -1 === index ) {
 				results.push( entity );
-			} else if ( !matches && index > -1 ) {
+			} else if ( ! matches && -1 < index ) {
 				results.splice( index, 1 );
 			}
 		}
@@ -121,35 +122,35 @@ export default class ECS {
 	}
 
 	#cleanup() {
-		while ( this.dirtyEntities.length > 0 ) {
+		while ( 0 < this.dirtyEntities.length ) {
 			const entity = this.dirtyEntities.pop();
-			const entityIndex = this.entities.indexOf(entity);
+			const entityIndex = this.entities.indexOf( entity );
 
-			if (entityIndex === -1) {
+			if ( -1 === entityIndex ) {
 				continue;
 			}
 
-			const [removed] = this.entities.splice( entityIndex, 1 );
+			const [ removed ] = this.entities.splice( entityIndex, 1 );
 
 			removed.components.forEach( component => {
 				this.dirtyComponents.push( component );
-			} );
-	
+			});
+
 			removed.components.clear();
 			this.entityPool.push( removed );
 
 			for ( const results of this.queries.values() ) {
 				const index = results.indexOf( entity );
-				if ( index > -1 ) {
+				if ( -1 < index ) {
 					results.splice( index, 1 );
 				}
 			}
 		}
 
-		while ( this.dirtyComponents.length > 0 ) {
+		while ( 0 < this.dirtyComponents.length ) {
 			const component = this.dirtyComponents.pop();
 			if ( ! this.componentPool.has( component.type ) ) {
-				this.componentPool.set( component.type, [] );
+				this.componentPool.set( component.type, []);
 			}
 			this.componentPool.get( component.type ).push( component );
 		}
