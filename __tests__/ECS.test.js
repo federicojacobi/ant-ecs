@@ -22,7 +22,7 @@ describe( 'ECS', () => {
 		it( 'should mark an entity for removal but not delete it immediately', () => {
 			const entity = ecs.getNextEntity();
 			ecs.killEntity( entity );
-			expect( ecs.dirtyEntities ).toEqual([ entity ]);
+			expect( ecs.dirtyEntities.has(entity) ).toBe(true);
 			expect( ecs.entities ).toHaveLength( 1 );
 		});
 

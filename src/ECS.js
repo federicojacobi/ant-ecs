@@ -25,9 +25,9 @@ export default class ECS {
 
 	/**
 	 * Entities to be removed from the world.
-	 * @type {Array<Entity>}
+	 * @type {Set<Entity>}
 	 */
-	dirtyEntities = [];
+	dirtyEntities = new Set();
 
 	/**
 	 * Components to be removed from the world.
@@ -89,7 +89,7 @@ export default class ECS {
 	 * @param {Entity} entity The entity to remove.
 	 */
 	killEntity( entity ) {
-		this.dirtyEntities.push( entity );
+		this.dirtyEntities.add( entity );
 	}
 
 	/**
@@ -131,13 +131,13 @@ export default class ECS {
 	removeComponent( entity, components = []) {
 		const componentTypes = Array.isArray( components ) ? components : [ components ];
 
-		componentTypes.forEach( componentType => {
+		for ( const componentType of componentTypes ) {
 			if ( entity.components.has( componentType ) ) {
 				const componentObject = entity.components.get( componentType );
 				this.dirtyComponents.push( componentObject );
 				entity.components.delete( componentType );
 			}
-		});
+		}
 
 		this.updateQueries( entity );
 
@@ -152,9 +152,9 @@ export default class ECS {
 	 */
 	addComponent( entity, components = []) {
 		if ( Array.isArray( components ) ) {
-			components.forEach( component => {
+			for ( const component of components ) {
 				entity.components.set( component.type, component );
-			});
+			}
 		} else {
 			entity.components.set( components.type, components );
 		}
@@ -218,35 +218,33 @@ export default class ECS {
 	 * @private
 	 */
 	#cleanup() {
-		while ( 0 < this.dirtyEntities.length ) {
-			const entity = this.dirtyEntities.pop();
-			const entityIndex = this.entities.indexOf( entity );
+		if ( 0 < this.dirtyEntities.size ) {
+			this.entities = this.entities.filter( entity => {
+				if ( this.dirtyEntities.has( entity ) ) {
+					entity.components.forEach( component => {
+						this.dirtyComponents.push( component );
+					});
 
-			if ( -1 === entityIndex ) {
-				continue;
-			}
+					entity.components.clear();
+					this.entityPool.push( entity );
 
-			const [ removed ] = this.entities.splice( entityIndex, 1 );
-
-			removed.components.forEach( component => {
-				this.dirtyComponents.push( component );
-			});
-
-			removed.components.clear();
-			this.entityPool.push( removed );
-
-			for ( const results of this.#queries.values() ) {
-				const index = results.indexOf( entity );
-				if ( -1 < index ) {
-					results.splice( index, 1 );
+					for ( const results of this.#queries.values() ) {
+						const index = results.indexOf( entity );
+						if ( -1 < index ) {
+							results.splice( index, 1 );
+						}
+					}
+					return false;
 				}
-			}
+				return true;
+			});
+			this.dirtyEntities.clear();
 		}
 
 		while ( 0 < this.dirtyComponents.length ) {
 			const component = this.dirtyComponents.pop();
 			if ( ! this.#componentPool.has( component.type ) ) {
-				this.#componentPool.set( component.type, []);
+				this.#componentPool.set( component.type, [] );
 			}
 			this.#componentPool.get( component.type ).push( component );
 		}
@@ -257,7 +255,9 @@ export default class ECS {
 	 * @param {any} args Arguments to pass to the systems' update method.
 	 */
 	update( args ) {
-		this.#systems.forEach( system => system.update( args ) );
+		for ( const system of this.#systems ) {
+			system.update( args );
+		}
 		this.#cleanup();
 	}
 }
