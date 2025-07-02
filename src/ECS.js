@@ -73,6 +73,7 @@ export default class ECS {
 			_entity = this.entityPool.pop();
 		} else {
 			_entity = new Entity();
+			_entity.id = this.entities.length;
 		}
 		this.entities.push( _entity );
 
