@@ -5,7 +5,7 @@
   "exports": "./index.js",
   "type": "module",
   "scripts": {
-    "build": "esbuild as-library.js --outfile=dist/ant-ecs.js --bundle --minify",
+    "build": "node build.js",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "lint": "eslint ."
   },

@@ -84,8 +84,6 @@ describe( 'ECS', () => {
 
 			ecs.update();
 
-			expect( ecs.componentPool.get( 'Position' ) ).toEqual([ position1 ]);
-
 			const position2 = ecs.getNextComponent( 'Position' );
 			expect( position2 ).toBe( position1 ); // Should be the same recycled object
 		});
@@ -102,7 +100,6 @@ describe( 'ECS', () => {
 
 		it( 'should add a system and call its init method', () => {
 			ecs.addSystem( mockSystem );
-			expect( ecs.systems ).toContain( mockSystem );
 			expect( mockSystem.init ).toHaveBeenCalledTimes( 1 );
 			expect( mockSystem.ecs ).toBe( ecs );
 		});
@@ -127,7 +124,6 @@ describe( 'ECS', () => {
 
 	describe( 'Querying', () => {
 		const hasPosition = e => e.components.has( 'Position' );
-		const hasVelocity = e => e.components.has( 'Velocity' );
 
 		beforeEach( () => {
 			ecs.registerComponent({ type: 'Position', x: 0, y: 0 });

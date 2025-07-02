@@ -1,7 +1,7 @@
 /**
  * Helper to create entities and quickly add components.
  *
- * @param {*} _ecs The ECS instance.
+ * @param {ECS} _ecs The ECS instance.
  * @returns a Scaffold object.
  */
 export default function Scaffold( _ecs ) {
@@ -22,8 +22,9 @@ export default function Scaffold( _ecs ) {
 		/**
 		 * Create a new component and add to the current entity.
 		 *
-		 * @param {*} component
-		 * @returns
+		 * @param {Component} component
+		 * @param {Object} args
+		 * @returns this
 		 */
 		addComponent( component, args = null ) {
 			if ( ! entity ) {
