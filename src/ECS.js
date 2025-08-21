@@ -101,6 +101,14 @@ export default class ECS {
 	}
 
 	/**
+	 * Get all registered component types.
+	 * @returns {Array<String>} A list of all registered component types.
+	 */
+	getRegisteredComponents() {
+		return this.#blueprint.keys();
+	}
+
+	/**
 	 * Get a new component from the pool or create a new one.
 	 * @param {String} type The type of component to get.
 	 * @returns {Component} The new or recycled component.
