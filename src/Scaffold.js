@@ -44,6 +44,7 @@ export default function Scaffold( _ecs ) {
 		 */
 		setEntity( _entity ) {
 			entity = _entity;
+			return this;
 		},
 
 		/**
